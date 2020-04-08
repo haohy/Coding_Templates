@@ -195,6 +195,53 @@ class Solution:
         return res
 ```
 
+### [1 ... *n* 中所有可能的 *k* 个数的组合](https://leetcode-cn.com/problems/combinations/)
+
+```python
+def combine(self, n: int, k: int) -> List[List[int]]:
+    def backtrack(i=1, stack=[]):	# 直接在参数区定义默认值
+        # 判断是否满足结果条件
+        if len(stack) == k:
+            res.append(stack[:])
+            return
+        # 结果的 k 个数都是升序的，所以下面循环为 [i,n]
+        for j in range(i, n+1):
+            stack.append(j)
+            backtrack(j+1, stack)	# 下一次遍历从 j+1 开始
+            stack.pop()
+
+        res = []
+        backtrack()
+
+        return res
+```
+
+### 组合总和，[I](https://leetcode-cn.com/problems/combination-sum/), [II](https://leetcode-cn.com/problems/combination-sum-ii/), [III](https://leetcode-cn.com/problems/combination-sum-iii/)
+
+框架一致，不同点在于循环里的判断
+
+```python
+def combinationSum3(self, k: int, n: int) -> List[List[int]]:
+    def backtrack(i=1, left=n, stack=[]):	# 参数可以直接设置成默认值，用 i 作为选择的标记指针
+        if len(stack) == k and left == 0:	# 判断是否为结果
+            res.append(stack[:])
+            return 
+
+        for j in range(i, 10):
+            
+            if j > l	# 剪枝操作
+                break	# 三种情况的不同点在于这里判断不同
+                
+            stack.append(j)
+            backtrack(j+1, left-j, stack)
+            stack.pop()
+
+        res = []
+        backtrack()
+
+        return res
+```
+
 
 
 ## 滑动窗口
@@ -626,6 +673,58 @@ def canPermutePalindrome(s: str) -> bool:
                 hashmap[c] -= 1
             
         return sum(hashmap.values()) <= 1
+```
+
+### [电话号码的字母组合](https://leetcode-cn.com/problems/letter-combinations-of-a-phone-number/) 
+
+- DFS 解法
+
+解释：每一层为一个输入的数字，向叶节点的选择为此数字键上对应的多个字符
+
+```python
+def letterCombinations(self, digits: str) -> List[str]:
+    if not digits:
+        return []
+
+    d = ['', '', 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz']
+    l = len(digits)
+    res = []
+
+    def dfs(tmp, index):	# 到当前层时，字符串为 tmp，到了第 index 个数字，下面子树为这个数字按键上对应的多个字符
+        if index == l:	# 如果 index 和数字个数相同，表示树到了叶节点，作为一种结果情况
+            res.append(tmp)
+            return 
+
+        cs = d[ord(digits[index])-ord('0')]	# index 对应的数字键上，所有字符在 cs 里
+
+        for c in cs:	# 合并 tmp 和每一种字符，并继续树的深层走
+            dfs(tmp+c, index+1)
+
+            dfs("", 0)
+
+            return res
+```
+
+- 队列解法
+
+```python
+def letterCombinations(self, digits: str) -> List[str]:
+    if not digits:
+        return []
+
+    d = ['', '', 'abc', 'def', 'ghi', 'jkl', 'mno', 'pqrs', 'tuv', 'wxyz']
+    l = len(digits)
+    res = [""]
+
+    for i in range(l):	# 遍历每个数字
+        cs = d[ord(digits[i])-48]	# 从 d 中取得对应按键的字符集
+        lr = len(res)	# 队列长度，用于决定从队列中取出多少个元素，后面队列元素会增长，要事先确定好
+        for _ in range(lr):
+            tmp = res.pop(0)
+            for c in cs:	# 每一个队列中对应的元素下一个数字对应的每个字符相加
+                res.append(tmp+c)
+	
+    return res
 ```
 
 
